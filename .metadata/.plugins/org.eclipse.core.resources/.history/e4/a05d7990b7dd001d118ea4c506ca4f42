@@ -1,0 +1,27 @@
+package com.mysite.sbb.question;
+
+import java.util.List;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+//import org.springframework.web.bind.annotation.ResponseBody;
+
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor //Lombok으로 스프링에서 DI(의존성 주입)의 방법 중에 생성자 주입을 임의의 코드없이 자동으로 설정해주는 어노테이션
+@Controller
+public class QuestionController {
+	
+	private final QuestionRepository questionRepository;
+	
+	@GetMapping("/question/list")
+//	@ResponseBody //http요청의 본문(body)이 그대로 전달
+	public String list(Model model) {
+//		return "question list";
+		List<Question> questionList = this.questionRepository.findAll();
+		model.addAttribute("questionList", questionList); //템플릿에 전달
+		return "question_list"; //question_list.html
+	}
+	
+}
