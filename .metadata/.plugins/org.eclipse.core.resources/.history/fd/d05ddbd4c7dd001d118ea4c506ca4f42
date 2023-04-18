@@ -34,7 +34,7 @@ public class QuestionController {
 //		return "<script>alert(" + questionList.size() + ");</script>";
 	}
 	
-	@GetMapping(value = "/detail/{id}") 
+	@GetMapping(value = "/detail/{id}")
 	public String detail(Model model, @PathVariable("id") Integer id) { //변하는 id 값을 얻을 때에는 @PathVariable 애너테이션을 사용
 		Question question = this.questionService.getQuestion(id);
 		model.addAttribute("question", question);
