@@ -7,6 +7,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+
+import com.mysite.sbb.answer.AnswerForm;
+
+import jakarta.validation.Valid;
 //import org.springframework.web.bind.annotation.ResponseBody;
 
 import lombok.RequiredArgsConstructor;
@@ -35,10 +42,34 @@ public class QuestionController {
 	}
 	
 	@GetMapping(value = "/detail/{id}") 
-	public String detail(Model model, @PathVariable("id") Integer id) { //변하는 id 값을 얻을 때에는 @PathVariable 애너테이션을 사용
+//	public String detail(Model model, @PathVariable("id") Integer id) { //변하는 id 값을 얻을 때에는 @PathVariable 애너테이션을 사용
+	public String detail(Model model, @PathVariable("id") Integer id, AnswerForm answerForm) { //question_detail 템플릿이 AnswerForm을 사용하기 때문에 추가해줘야한다.
 		Question question = this.questionService.getQuestion(id);
 		model.addAttribute("question", question);
 		return "question_detail";
+	}
+	
+	@GetMapping("/create") //"질문 등록하기" 버튼을 통한 /question/create 요청은 GET 요청에 해당하므로 @GetMapping 애너테이션을 사용
+//	public String questionCreate() {
+	
+	public String questionCreate(QuestionForm questionForm) { //question_form.html 템플릿은 "질문 등록하기" 버튼을 통해 GET 방식으로 요청되더라도 th:object에 의해 QuestionForm 객체가 필요
+															  //GET 방식에서도 question_form 템플릿에 QuestionForm 객체가 전달
+		return "question_form";
+	}
+	
+	@PostMapping("/create") //POST 방식으로 요청한 /question/create URL을 처리
+	//public String questionCreate(@RequestParam String subject, @RequestParam String content) {  //화면에서 입력한 제목(subject)과 내용(content)을 매개변수로 받는다.
+	public String questionCreate(@Valid QuestionForm questionForm, BindingResult bindingResult) { //@Valid 애너테이션을 적용하면 QuestionForm의 @NotEmpty, @Size 등으로 설정한 검증 기능이 동작
+																								  //BindingResult 매개변수는 @Valid 애너테이션으로 인해 검증이 수행된 결과를 의미하는 객체
+																								  //BindingResult 매개변수는 항상 @Valid 매개변수 바로 뒤에 위치해야 한다. 만약 2개의 매개변수의 위치가 정확하지 않다면 @Valid만 적용이 되어 입력값 검증 실패 시 400 오류가 발생
+		//질문 등록 템플릿에서 필드 항목으로 사용했던 subject, content의 이름과 동일하게 해야 함
+		// 질문 저장
+		if(bindingResult.hasErrors()) { //bindResult.hasErrors()를 호출하여 오류가 있는 경우에는 다시 폼을 작성하는 화면을 렌더링
+			return "question_form";
+		}
+//		this.questionService.create(subject, content);
+		this.questionService.create(questionForm.getSubject(), questionForm.getContent());
+		return "redirect:/question/list"; // 질문 저장 후 질문목록으로 이동
 	}
 	
 }
