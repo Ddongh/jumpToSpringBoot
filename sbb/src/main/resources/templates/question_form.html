@@ -2,11 +2,13 @@
 	<div layout:fragment="content" class="container">
 		<h5 class="my-3 border-bottom pb-2">질문등록</h5>
 		<form th:action="@{/question/create}" th:object="${questionForm}" method="post"> <!-- th:object를 사용하여 폼의 속성들이 QuestionForm의 속성들로 구성된다는 점을 타임리프 엔진에 알려줘야 한다. -->
-			<div class="alert alert-danger" role="alert" th:if="${#fields.hasAnyErrors()}"> <!-- #fields.hasAnyErrors가 true인 경우는 QuestionForm 검증이 실패한 경우 -->
+			<!-- <div class="alert alert-danger" role="alert" th:if="${#fields.hasAnyErrors()}"> --> <!-- #fields.hasAnyErrors가 true인 경우는 QuestionForm 검증이 실패한 경우 -->
 																							<!-- alert alert-danger 클래스를 사용하여 오류는 붉은 색으로 표시 -->
-				<div th:each="err : ${#fields.allErrors()}" th:text="${err}" /> <!-- #fields.allErrors() : QuestionForm에서 검증에 실패한 오류 메시지 -->
-			</div>
-			<div class="mb-3">
+				<!-- <div th:each="err : ${#fields.allErrors()}" th:text="${err}" /> --> <!-- #fields.allErrors() : QuestionForm에서 검증에 실패한 오류 메시지 -->
+			<!-- </div> -->
+			<div th:replace="~{form_errors :: formErrorsFragment}"></div> <!-- th:replace : 공통 템플릿을 템플릿 내에 삽입 -->
+																		  <!-- div 엘리먼트를 form_errors.html 파일의 th:fragment 속성명이 formErrorsFragment인 엘리먼트로 교체 -->
+			<div class="mb-3"> 
 				<label for="subject" class="form-label">제목</label>
 				<!-- <input type="text" name="subject" id="subject" class="form-control"> -->
 				<input type="text" th:field="*{subject}" class="form-control"> <!-- th:field : id, name, value 속성이 모두 자동으로 생성 -->

@@ -31,9 +31,10 @@
 		<!-- 답변 작성 -->
 		<!-- <form class="my-3" th:action="@{|/answer/create/${question.id}|}" method="post"> --> <!-- 버튼을 누르면 POST 방식으로 /answer/create/<질문id> URL이 호출(submit) -->
 		<form class="my-3" th:action="@{|/answer/create/${question.id}|}" th:object="${answerForm}" method="post"> <!-- 답변 등록 폼의 속성이 AnswerForm을 사용하기 때문에 th:object 속성을 추가 -->
-			<div class="alert alert-danger" role="alert" th:if="${#fields.hasAnyErrors()}">
+			<!-- <div class="alert alert-danger" role="alert" th:if="${#fields.hasAnyErrors()}">
 				<div th:each="err : ${#fields.allErrors()}" th:text="${err}" />
-			</div>
+			</div> -->
+			<div th:replace="~{form_errors :: formErrorsFragment}"></div>
 			<!-- <textarea class="form-control" name="content" id="content" rows="15"></textarea> -->
 			<textarea class="form-control" th:field="*{content}" rows="15"></textarea>
 			<input class="btn btn-primary my-2" type="submit" value="답변등록">
