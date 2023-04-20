@@ -13,7 +13,8 @@
 			</thead>
 			<tbody>
 				<!-- <tr th:each="question : ${questionList}">--> <!-- <tr> ... </tr> 엘리먼트를 questionList의 갯수만큼 반복하여 출력 -->
-				<tr th:each="question, loop : ${questionList}">
+				<!-- <tr th:each="question, loop : ${questionList}"> -->
+				<tr th:each="question, loop : ${paging}"> <!-- QuestionController에서 model.addAttribute로 전달받음 -->
 					<!-- <td th:text="${question.subject}"></td> --> <!-- question 객체의 제목 -->
 					<td th:text="${loop.count}"></td> <!-- loop.count를 사용하여 표시 -->
 					<td>
@@ -26,6 +27,32 @@
 				</tr>
 			</tbody>
 		</table>
+		<!-- 페이징처리 시작 -->
+		<div th:if="${!paging.isEmpty()}">
+			<ul class="pagination justify-content-center">
+				<li class="page-item" th:classappend="${!paging.hasPrevious} ? 'disabled'"> <!-- 이전 페이지가 없는 경우에는 "이전" 링크가 비활성화(disabled) -->
+					<a class="page-link" th:href="@{|?page=${paging.number-1}|}">
+						<span>이전</span>
+					</a>
+				</li>
+				<li th:each="page: ${#numbers.sequence(0, paging.totalPages-1)}" 
+					th:classappend="${page == paging.number} ? 'active'" 
+					th:if="${page >= paging.number-5 and page <= paging.number+5}"
+					class="page-item"> <!-- 페이지 리스트를 루프 돌면서 해당 페이지로 이동할 수 있는 링크를 생성 -->
+									   <!-- 페이지가 현재 페이지와 같을 경우에는 active클래스를 적용하여 강조표시(선택표시) -->
+									   <!-- th:classappend="조건식 ? 클래스값" 속성은 조건식이 참인 경우 클래스값을 class 속성에 추가 -->
+									   <!-- #numbers.sequence(시작, 끝)은 시작 번호부터 끝 번호까지의 루프를 만들어 내는 타임리프의 유틸리티 -->
+									   <!-- 루프내에 표시되는 페이지가 현재 페이지를 의미하는 paging.number 보다 5만큼 작거나 큰 경우에만 표시 -->
+					<a th:text="${page}" class="page-link" th:href="@{|?page=${page}|}"></a>
+				</li>																																						 																																																																												
+				<li class="page-item" th:classappend="${!paging.hasNext} ? 'disabled'"> <!-- 다음 페이지가 없는 경우에는 "이전" 링크가 비활성화(disabled) -->																						
+					<a class="page-link" th:href="@{|?page=${paging.number+1}|}">
+						<span>다음</span>
+					</a>
+				</li>
+			</ul>
+		</div>
+		<!-- 페이징 처리 끝 --> 
 		<a th:href="@{/question/create}" class="btn btn-primary">질문 등록하기</a>	
 	</div>
 </html>
