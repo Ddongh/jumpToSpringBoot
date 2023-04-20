@@ -16,11 +16,16 @@
 				<!-- <tr th:each="question, loop : ${questionList}"> -->
 				<tr th:each="question, loop : ${paging}"> <!-- QuestionController에서 model.addAttribute로 전달받음 -->
 					<!-- <td th:text="${question.subject}"></td> --> <!-- question 객체의 제목 -->
-					<td th:text="${loop.count}"></td> <!-- loop.count를 사용하여 표시 -->
+					<!-- <td th:text="${loop.count}"></td> --> <!-- loop.count를 사용하여 표시 -->
+					<td th:text="${paging.getTotalElements - (paging.number * paging.size) - loop.index}"></td> <!-- 게시물에 일련번호 추가 -->
 					<td>
 						<a th:href="@{|/question/detail/${question.id}|}" th:text="${question.subject}" />
 						<!-- URL 주소를 나타낼때는 반드시 @{ 문자와 } 문자 사이에 입력 -->
 						<!-- 좌우에 | 문자없이 사용하면 오류가 발생 -->
+						<span class="text-danger small ms-2"
+							th:if="${#lists.size(question.answerList) > 0}" 
+							th:text="${#lists.size(question.answerList)}"> <!-- 답변이 있는지 조사 -->
+																		   <!-- 답변 개수를 표시 -->
 					</td>
 					<!-- <td th:text="${question.createDate}"></td> -->
 					<td th:text="${#temporals.format(question.createDate, 'yyyy-MM-dd HH:mm')}"></td> <!-- #temporals.format(날짜객체, 날짜포맷) - 날짜객체를 날짜포맷에 맞게 변환 -->
